@@ -5,6 +5,35 @@ import java.util.*;
 public class KraskalAlgorithm
 {
     public KraskalAlgorithm() {}
+	
+	private void SortEdges(ArrayList<Graph.GraphEdge> edges, int start, int end)
+    {
+        if (start >= end)
+            return;
+        
+        int i = start, j = end;
+        int cur = i - (i - j) / 2;
+        while (i < j) 
+        {
+            while (i < cur && (edges.get(i).GetLength() <= edges.get(cur).GetLength()))
+                i++;
+            while (j > cur && (edges.get(cur).GetLength() <= edges.get(j).GetLength())) 
+                j--;
+            if (i < j) 
+            {
+                Graph.GraphEdge temp = edges.get(i);
+                edges.set(i, edges.get(j));
+                edges.set(j, temp);
+                               
+                if (i == cur)
+                    cur = j;
+                else if (j == cur)
+                    cur = i;
+            }
+        }
+        SortEdges(edges, start, cur);
+        SortEdges(edges, cur + 1, end);
+    }
     
     public Graph GetMinSpanTree(Graph src)
     {
