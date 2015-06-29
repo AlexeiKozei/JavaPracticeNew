@@ -30,5 +30,24 @@ public class Graph
     private ArrayList<GraphEdge> data;
     private int vertex_count;
     
-   
+     public Graph(String file_name) throws FileNotFoundException
+    {
+        Scanner fin = new Scanner(new File(file_name));
+        
+        int edges_count = fin.nextInt();
+        vertex_count = fin.nextInt();
+        data = new ArrayList<>();
+        
+        int x, y, l;
+        for(int i = 0; i < edges_count; i++)
+        {
+            x = fin.nextInt();
+            y = fin.nextInt();
+            l = fin.nextInt();
+            
+            data.add(new GraphEdge(x, y, l));
+        }
+    }
+    
+    
 }
