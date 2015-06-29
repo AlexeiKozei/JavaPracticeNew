@@ -135,5 +135,123 @@ public class KraskalVisualizer extends Thread
         }
     }
     
+	private Color RandomColor()
+    {
+        Random rnd = new Random();
+        float[] hsb = Color.RGBtoHSB(rnd.nextInt(255), rnd.nextInt(255), 
+                rnd.nextInt(255), null);
+        
+        return Color.getHSBColor(hsb[0], hsb[1], hsb[2]);
+    }
+    private Color InvertColor(Color c)
+    {
+        int r = 255 - c.getRed();
+        int g = 255 - c.getGreen();
+        int b = 255 - c.getBlue();
+        
+        float[] hsb = Color.RGBtoHSB(r, g, b, null);
+        
+        return Color.getHSBColor(hsb[0], hsb[1], hsb[2]);
+    }
+    
+    private void GetColors()
+    {
+        colors = new Color[source.GetVertexCount()];
+        for(int i = 0; i < source.GetVertexCount(); i++)
+            colors[i] = RandomColor();
+    }
+    
+    private void RenderToPanel(BufferedImage img)
+    {
+        render_box.getGraphics().drawImage(img, 0, 0, null);
+    }
+    
+    
+    private void DrawVertices(Graphics2D pobj)
+    {
+        int x, y, x1, y1;
+        double alpha = 0.0;
+        
+        Font myFont = new Font("TimesNewRoman", Font.CENTER_BASELINE, 15);
+        pobj.setFont(myFont);
+        
+        pobj.setPaintMode(); 
+        for(Integer i = 0; i < source.GetVertexCount(); i++)
+        {
+            pobj.setColor(colors[i]);
+            
+            x = (int) (xc + rc * Math.cos(alpha));
+            y = (int) (yc + rc * Math.sin(alpha));
+            
+            pobj.fillOval(x - rv, y - rv, 2 * rv, 2 * rv);
+            
+            pobj.setColor(InvertColor(pobj.getColor()));
+            pobj.drawString(i.toString(), x - rt, y + rt);
+            
+            alpha += da;
+        }
+    }
+    
+    private void DrawEdges(Graph g, Graphics2D pobj, boolean is_render)
+    {
+        int x, y, x1, y1;
+        double alpha;
+        
+        
+        pobj.setColor(Color.BLACK);
+        pobj.setStroke(new BasicStroke(10.0f));
+        for(int i = 0; i < g.GetEdgeCount(); i++)
+        {
+            Graph.GraphEdge tmp_edge = g.GetEdge(i);
+            
+            int src = tmp_edge.GetSrc();
+            int dst = tmp_edge.GetDst();
+            
+            alpha = da * src;
+            x = (int)(xc + rc * Math.cos(alpha));
+            y = (int)(yc + rc * Math.sin(alpha));
+            
+            alpha = da * dst;
+            x1 = (int)(xc + rc * Math.cos(alpha));
+            y1 = (int)(yc + rc * Math.sin(alpha));
+            
+            if(is_render)
+               pobj.setColor(colors[src]);
+            
+            pobj.drawLine(x, y, x1, y1);
+        }
+    }
+    
+    private BufferedImage DrawGraph()
+    {
+        BufferedImage bg = new BufferedImage(render_box.getWidth(), 
+                render_box.getHeight(), BufferedImage.TYPE_3BYTE_BGR);
+        
+        Graphics2D g = bg.createGraphics();
+        
+        g.setColor(java.awt.Color.WHITE);
+        g.fillRect(0, 0, render_box.getWidth(), render_box.getHeight());
+       
+        DrawEdges(source, g, false);
+        DrawVertices(g);
+             
+        return bg;
+    }
+    
+    private BufferedImage Render(ArrayList<Graph.GraphEdge> edges)
+    {
+        BufferedImage bg = new BufferedImage(render_box.getWidth(), 
+                render_box.getHeight(), BufferedImage.TYPE_3BYTE_BGR);
+        
+        Graphics2D g = bg.createGraphics();
+        
+        g.setColor(java.awt.Color.WHITE);
+        g.fillRect(0, 0, render_box.getWidth(), render_box.getHeight());
+        
+        DrawEdges(new Graph(edges, source.GetVertexCount()), g, true);
+        DrawVertices(g);
+             
+        return bg;
+    }
     
 }
