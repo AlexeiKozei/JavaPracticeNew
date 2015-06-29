@@ -152,7 +152,86 @@ public class MainForm extends javax.swing.JFrame
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-   
+   private void VisualizeButtonActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_VisualizeButtonActionPerformed
+    {//GEN-HEADEREND:event_VisualizeButtonActionPerformed
+        if (is_graph_load)
+        {
+            if (!kv.isAlive())
+            {
+                try
+                {
+                    data = new Graph(path);
+                } catch (FileNotFoundException ex)
+                {
+                    Logger.getLogger(MainForm.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                kv = new KraskalVisualizer(this, data);
+                kv.start();
+                
+                NextButton.setEnabled(true);
+                VisualizeButton.setEnabled(false);
+                LoadButton.setEnabled(false);
+                MSTLen.setText("");
+            }
+            else
+            {
+                NextButton.setEnabled(true);
+                kv.suspend();
+                VisualizeButton.setEnabled(false);
+                LoadButton.setEnabled(false);
+            }
+        }
+        else
+        {
+             JOptionPane.showMessageDialog(this, "Сначала следует загрузить граф!",
+                                              "Ошибка", JOptionPane.ERROR_MESSAGE);
+        }
+    }//GEN-LAST:event_VisualizeButtonActionPerformed
+
+    private void NextButtonActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_NextButtonActionPerformed
+    {//GEN-HEADEREND:event_NextButtonActionPerformed
+            kv.resume();
+    }//GEN-LAST:event_NextButtonActionPerformed
+
+    
+    public static void main(String args[])
+    {
+        /* Set the Nimbus look and feel */
+        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
+        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
+         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
+         */
+        try
+        {
+            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels())
+            {
+                if ("Nimbus".equals(info.getName()))
+                {
+                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
+                    break;
+                }
+            }
+        } catch (ClassNotFoundException ex)
+        {
+            java.util.logging.Logger.getLogger(MainForm.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        } catch (InstantiationException ex)
+        {
+            java.util.logging.Logger.getLogger(MainForm.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        } catch (IllegalAccessException ex)
+        {
+            java.util.logging.Logger.getLogger(MainForm.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        } catch (javax.swing.UnsupportedLookAndFeelException ex)
+        {
+            java.util.logging.Logger.getLogger(MainForm.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        }
+        //</editor-fold>
+
+        /* Create and display the form */
+        java.awt.EventQueue.invokeLater(() ->
+        {
+            new MainForm().setVisible(true);
+        });
+    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JList EdgesList;
