@@ -151,6 +151,45 @@ public class MainForm extends javax.swing.JFrame
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+	
+	private void LoadButtonActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_LoadButtonActionPerformed
+    {//GEN-HEADEREND:event_LoadButtonActionPerformed
+        JFileChooser ofd = new JFileChooser();
+        ofd.setCurrentDirectory(new File(System.getProperty("user.dir")));
+        if(ofd.showOpenDialog(this) == JFileChooser.APPROVE_OPTION)
+        {
+            try 
+            {
+                VisualizeButton.setEnabled(true);
+                path = ofd.getSelectedFile().getAbsolutePath();
+                data = new Graph(path);
+                
+                
+                Object[] edges_list = new Object[data.GetEdgeCount()];
+                for (int i = 0; i < data.GetEdgeCount(); i++)
+                {
+                    Graph.GraphEdge tmp_edge = data.GetEdge(i);
+                    Integer src = tmp_edge.GetSrc();
+                    Integer dst = tmp_edge.GetDst();
+                    Integer len = tmp_edge.GetLength();
+                    edges_list[i] = src.toString() + "-" + dst.toString() + " Len = " + len.toString();
+                }
+                EdgesList.setListData(edges_list);
+                EdgesList.updateUI();
+                is_graph_load = true;
+                kv = new KraskalVisualizer(this, data);
+                kv.start();
+            } 
+            catch (FileNotFoundException ex) 
+            {
+                Logger.getLogger(MainForm.class.getName()).log(Level.SEVERE, null, ex);
+                
+                JOptionPane.showMessageDialog(this, "Такого файла не существует!",
+                                              "Ошибка", JOptionPane.ERROR_MESSAGE);
+            }
+        }
+    }//GEN-LAST:event_LoadButtonActionPerformed
+
 
    private void VisualizeButtonActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_VisualizeButtonActionPerformed
     {//GEN-HEADEREND:event_VisualizeButtonActionPerformed
