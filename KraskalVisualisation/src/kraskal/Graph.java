@@ -55,19 +55,17 @@ public class Graph
             throw new NullPointerException("edges nustn't be null");
         else if(vcount < 0)
             throw new IllegalArgumentException("vcount must be > 0");
-        else
-        {
-            data = edges;
-            vertex_count = vcount;
-        }
+        
+        data = edges;
+        vertex_count = vcount;
     }
     
     public GraphEdge GetEdge(int idx)
     {
         if(idx < 0 && idx >= data.size())
             throw new IllegalArgumentException("idx must be > 0 and < length of array");
-        else
-            return data.get(idx);
+        
+        return data.get(idx);
     }
     
     public ArrayList<GraphEdge> GetData()
